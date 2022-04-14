@@ -43,16 +43,6 @@ func (query Queryable[T]) Any(predicate func(T) bool) bool {
 	return false
 }
 
-//// Contains determines whether a collection contains a specified element.
-//func (query Queryable[T]) Contains(item T) bool {
-//	for _, elem := range query {
-//		if elem == item {
-//			return true
-//		}
-//	}
-//	return false
-//}
-
 // ForEach performs the specified action on each element of a collection.
 func (query Queryable[T]) ForEach(action func(int, T)) {
 	for index, elem := range query {

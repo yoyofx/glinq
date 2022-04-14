@@ -2,6 +2,7 @@ package glinq
 
 import (
 	"github.com/stretchr/testify/assert"
+	"strconv"
 	"testing"
 )
 
@@ -26,4 +27,14 @@ func TestLinq(t *testing.T) {
 
 	oSlice := From([]int{1, 2, 4}).Where(func(item int) bool { return item%2 == 0 })
 	assert.Equal(t, oSlice.ToSlice(), []int{2, 4})
+
+	qtFrom := From([]int{1, 2, 4})
+	sum := Reduce(qtFrom, 0, func(i, j int) int { return i + j })
+	assert.Equal(t, sum, 7)
+
+	mapQuery := Map(qtFrom, func(item int) string {
+		return strconv.Itoa(item)
+	})
+	assert.Equal(t, mapQuery.ToSlice(), []string{"1", "2", "4"})
+
 }
