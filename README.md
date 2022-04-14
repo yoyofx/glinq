@@ -1,0 +1,2 @@
+# glinq
+linq for golang
