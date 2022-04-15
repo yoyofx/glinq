@@ -14,6 +14,11 @@ func (query Queryable[T]) ToSlice() []T {
 	return query
 }
 
+// GetEnumerator get enumerable object
+func (query Queryable[T]) GetEnumerator() IEnumerator[T] {
+	return &ListEnumerable[T]{list: query, index: 0}
+}
+
 // Where filters a collection of values based on a predicate.
 func (query Queryable[T]) Where(predicate func(T) bool) Queryable[T] {
 	var result []T
@@ -45,7 +50,7 @@ func (query Queryable[T]) Any(predicate func(T) bool) bool {
 	return false
 }
 
-// ForEach performs the specified action on each element of a collection.
+// DoWhile performs the specified action on each element of a collection.
 func (query Queryable[T]) ForEach(action func(int, T)) {
 	for index, elem := range query {
 		action(index, elem)

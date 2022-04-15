@@ -1,8 +1,22 @@
 package glinq
 
-import "errors"
+import (
+	"errors"
+	"reflect"
+)
 
 type ICollection[T any] interface {
+	Push(T)
+	RemoveAt(int)
+	Count() int
+	Contains(T) bool
+	GetEnumerator() IEnumerator[T]
+}
+
+type IEnumerator[T any] interface {
+	Next() bool
+	Reset()
+	Value() (T, bool)
 }
 
 type Number interface {
@@ -14,5 +28,10 @@ type Ordered interface {
 }
 
 var (
-	ErrorCannotFound = errors.New("can not find element")
+	ErrorCannotFound      = errors.New("can not find element")
+	ErrorIndexoutOfBounds = errors.New("index out of bounds")
 )
+
+func Equal[T1, T2 any](a T1, b T2) bool {
+	return reflect.ValueOf(a).Interface() == reflect.ValueOf(b).Interface()
+}

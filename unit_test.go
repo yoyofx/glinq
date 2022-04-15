@@ -1,6 +1,7 @@
 package glinq
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"strconv"
 	"testing"
@@ -50,14 +51,39 @@ func TestArrayList(t *testing.T) {
 	list1.Add(5)
 
 	assert.Equal(t, list1.ToSlice(), []int{1, 2, 4, 5})
-	list1.Remove(3)
+	list1.RemoveAt(3)
 	// now list items of { 1, 2, 4}
 	assert.Equal(t, list1.ToSlice(), []int{1, 2, 4})
 	assert.Equal(t, list1.Contains(2), true)
 	assert.Equal(t, list1.Contains(5), false)
 
-	list1.Remove(0)
+	list1.RemoveAt(0)
 	// now list items of { 2, 4}
-	assert.Equal(t, list1.ToQueryable().All(func(item int) bool { return item%2 == 0 }), true)
+	qlist := list1.ToQueryable()
+	DoWhile(qlist.GetEnumerator(), func(v int) bool {
+		if v == 2 {
+			assert.Equal(t, v, 2)
+		} else {
+			assert.Equal(t, v, 4)
+		}
+		return true
+	})
+	assert.Equal(t, qlist.All(func(item int) bool { return item%2 == 0 }), true)
+
+}
+
+func TestListEnumerable(t *testing.T) {
+	list1 := NewListOf([]int{1, 2, 4})
+	it := list1.GetEnumerator()
+	DoWhile(it, func(v int) bool {
+		if v == 4 { // v==4 break
+			return false
+		}
+		fmt.Println(v) // { 1, 2 }
+		return true
+	})
+}
+
+func TestLinkedList(t *testing.T) {
 
 }
