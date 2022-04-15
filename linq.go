@@ -22,7 +22,9 @@ type IEnumerator[T any] interface {
 }
 
 type Number interface {
-	~int | ~int64 | ~float64 | ~float32 | ~uint | ~uint64
+	int | int8 | int16 | int32 | int64 |
+		uint | uint8 | uint16 | uint32 | uint64 |
+		float32 | float64
 }
 
 type Ordered interface {
@@ -36,4 +38,12 @@ var (
 
 func Equal[T1, T2 any](a T1, b T2) bool {
 	return reflect.ValueOf(a).Interface() == reflect.ValueOf(b).Interface()
+}
+
+func Sum[T Number](query Queryable[T]) T {
+	var sum T
+	for _, elem := range query {
+		sum += elem
+	}
+	return sum
 }
