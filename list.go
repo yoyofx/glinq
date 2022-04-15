@@ -2,7 +2,6 @@ package glinq
 
 import (
 	"errors"
-	"reflect"
 )
 
 // ArrayList Array List for the slice
@@ -21,10 +20,10 @@ func NewList[T any]() *ArrayList[T] {
 	return &ArrayList[T]{data: array}
 }
 
-// Add adds an element to the list
-func (list *ArrayList[T]) Add(x T) { list.data = append([]T(list.data), x) }
+// Push adds an element to the list
+func (list *ArrayList[T]) Push(x T) { list.data = append([]T(list.data), x) }
 
-// RemoveAt removes an element from the list.
+// RemoveAt removes an element from the list by index.
 func (list *ArrayList[T]) RemoveAt(i int) {
 	if i < len([]T(list.data)) {
 		list.data = append([]T(list.data[:i]), list.data[i+1:]...)
@@ -33,14 +32,30 @@ func (list *ArrayList[T]) RemoveAt(i int) {
 	}
 }
 
+// Remove removes an element from the list.
+func (list *ArrayList[T]) Remove(item T) {
+	removeAtIndex := 0
+	for index, elem := range list.data {
+		if Equal(elem, item) {
+			removeAtIndex = index
+			break
+		}
+	}
+	list.RemoveAt(removeAtIndex)
+}
+
 // Contains return bool,that element is in the list.
 func (list *ArrayList[T]) Contains(elem T) bool {
 	for _, item := range list.data {
-		if reflect.ValueOf(item).Interface() == reflect.ValueOf(elem).Interface() {
+		if Equal(item, elem) {
 			return true
 		}
 	}
 	return false
+}
+
+func (list *ArrayList[T]) IndexOf(T) int {
+	return 0
 }
 
 // Count return a number, that's list elements count.

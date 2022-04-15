@@ -50,7 +50,7 @@ func (query Queryable[T]) Any(predicate func(T) bool) bool {
 	return false
 }
 
-// DoWhile performs the specified action on each element of a collection.
+// ForEach performs the specified action on each element of a collection.
 func (query Queryable[T]) ForEach(action func(int, T)) {
 	for index, elem := range query {
 		action(index, elem)

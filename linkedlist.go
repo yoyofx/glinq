@@ -1,24 +1,38 @@
 package glinq
 
+// LinkedList is double linked list data structure
 type LinkedList[T any] struct {
 	head, tail *node[T]
 	count      int
 }
 
+// double linked list of node structure
 type node[T any] struct {
 	val  T
 	prev *node[T]
 	next *node[T]
 }
 
+// NewLinkedListOf creates a new linked list of array.
 func NewLinkedListOf[T any](array []T) *LinkedList[T] {
-	return nil
+	list := &LinkedList[T]{}
+	for _, item := range array {
+		list.Push(item)
+	}
+	return list
 }
 
+// NewLinkedList creates a new linked list of empty.
+func NewLinkedList[T any]() *LinkedList[T] {
+	return &LinkedList[T]{}
+}
+
+// IsEmpty list is empty?
 func (lst *LinkedList[T]) IsEmpty() bool {
 	return lst.head == nil && lst.tail == nil
 }
 
+// Push adds an element to the list
 func (lst *LinkedList[T]) Push(v T) {
 	lst.count++
 	n := &node[T]{
@@ -34,10 +48,12 @@ func (lst *LinkedList[T]) Push(v T) {
 	lst.tail = n
 }
 
+// RemoveAt removes an element from the list by index.
 func (lst *LinkedList[T]) RemoveAt(index int) {
 	panic("not supported")
 }
 
+// Remove removes an element from the list.
 func (lst *LinkedList[T]) Remove(data T) {
 	lst.count--
 	for p := lst.head; p != nil; p = p.next {
@@ -59,10 +75,12 @@ func (lst *LinkedList[T]) Remove(data T) {
 	}
 }
 
+// Count return a number, that's list elements count.
 func (lst *LinkedList[T]) Count() int {
 	return lst.count
 }
 
+// Contains return bool,that element is in the list.
 func (lst *LinkedList[T]) Contains(elem T) bool {
 	containsElem := false
 	DoWhile(lst.GetEnumerator(), func(item T) bool {
@@ -75,8 +93,26 @@ func (lst *LinkedList[T]) Contains(elem T) bool {
 	return containsElem
 }
 
+func (lst *LinkedList[T]) IndexOf(elem T) int {
+	index := 0
+	DoWhile(lst.GetEnumerator(), func(item T) bool {
+		if Equal(elem, item) {
+			return false
+		}
+		index++
+		return true
+	})
+	return index
+}
+
+// GetEnumerator get enumerable object
 func (lst *LinkedList[T]) GetEnumerator() IEnumerator[T] {
 	return &LinkedListEnumerable[T]{first: &lst.head, next: &lst.head}
+}
+
+// ToQueryable from LinkedList[T] to Queryable[T
+func (lst *LinkedList[T]) ToQueryable() Queryable[T] {
+	return lst.ToSlice()
 }
 
 // ToSlice from ArrayList[T] to []T
@@ -84,9 +120,9 @@ func (lst *LinkedList[T]) ToSlice() []T {
 	slice := make([]T, lst.count)
 	index := 0
 	DoWhile(lst.GetEnumerator(), func(item T) bool {
-		index++
 		slice[index] = item
-		return false
+		index++
+		return true
 	})
 	return slice
 }

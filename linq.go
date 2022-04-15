@@ -8,8 +8,10 @@ import (
 type ICollection[T any] interface {
 	Push(T)
 	RemoveAt(int)
+	Remove(T)
 	Count() int
 	Contains(T) bool
+	IndexOf(T) int
 	GetEnumerator() IEnumerator[T]
 }
 

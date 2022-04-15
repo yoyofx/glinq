@@ -48,7 +48,7 @@ func TestLinq(t *testing.T) {
 
 func TestArrayList(t *testing.T) {
 	list1 := NewListOf([]int{1, 2, 4})
-	list1.Add(5)
+	list1.Push(5)
 
 	assert.Equal(t, list1.ToSlice(), []int{1, 2, 4, 5})
 	list1.RemoveAt(3)
@@ -84,6 +84,22 @@ func TestListEnumerable(t *testing.T) {
 	})
 }
 
-func TestLinkedList(t *testing.T) {
+func TestICollectionAndEnumerator(t *testing.T) {
+	var collection ICollection[int] = NewListOf([]int{1, 2, 3})
+	DoWhile(collection.GetEnumerator(), func(v int) bool {
+		fmt.Println(v)
+		return true
+	})
 
+	var collection2 ICollection[int] = NewLinkedListOf([]int{2, 3, 4})
+	DoWhile(collection2.GetEnumerator(), func(v int) bool {
+		fmt.Println(v)
+		return true
+	})
+}
+
+func TestLinkedList(t *testing.T) {
+	linkedList := NewLinkedListOf([]int{2, 3, 4})
+	linkedList.Push(5)
+	assert.Equal(t, linkedList.ToSlice(), []int{2, 3, 4, 5})
 }
