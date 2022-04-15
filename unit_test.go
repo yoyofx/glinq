@@ -7,10 +7,16 @@ import (
 )
 
 func TestSort(t *testing.T) {
-	s1 := []int{3, 5, 2}
-	s2 := []int{3, 5, 2}
-	assert.Equal(t, SortDesc(s1), []int{5, 3, 2})
-	assert.Equal(t, SortAsc(s2), []int{2, 3, 5})
+	s1 := From([]int{3, 5, 2})
+	s1.Sort(func(a, b int) bool {
+		return a > b
+	})
+	//s2 := From([]int{3, 5, 2})
+	assert.Equal(t, s1.ToSlice(), []int{5, 3, 2})
+	s1.Sort(func(a, b int) bool {
+		return a < b
+	})
+	assert.Equal(t, s1.ToSlice(), []int{2, 3, 5})
 }
 
 func TestLinq(t *testing.T) {
@@ -36,5 +42,22 @@ func TestLinq(t *testing.T) {
 		return strconv.Itoa(item)
 	})
 	assert.Equal(t, mapQuery.ToSlice(), []string{"1", "2", "4"})
+
+}
+
+func TestArrayList(t *testing.T) {
+	list1 := NewListOf([]int{1, 2, 4})
+	list1.Add(5)
+
+	assert.Equal(t, list1.ToSlice(), []int{1, 2, 4, 5})
+	list1.Remove(3)
+	// now list items of { 1, 2, 4}
+	assert.Equal(t, list1.ToSlice(), []int{1, 2, 4})
+	assert.Equal(t, list1.Contains(2), true)
+	assert.Equal(t, list1.Contains(5), false)
+
+	list1.Remove(0)
+	// now list items of { 2, 4}
+	assert.Equal(t, list1.ToQueryable().All(func(item int) bool { return item%2 == 0 }), true)
 
 }

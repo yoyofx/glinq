@@ -1,5 +1,7 @@
 package glinq
 
+import "sort"
+
 // Queryable query collection
 type Queryable[T any] []T
 
@@ -79,4 +81,9 @@ func (query Queryable[T]) First() (T, error) {
 // FirstIf return first element of collection satisfy a condition.
 func (query Queryable[T]) FirstIf(predicate func(T) bool) (T, error) {
 	return query.Where(predicate).First()
+}
+
+// Sort return the sort element of a collection by compare function.
+func (query Queryable[T]) Sort(cmp func(T, T) bool) {
+	sort.Sort(orderedSlice[T]{query, cmp})
 }
