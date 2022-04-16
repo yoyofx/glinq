@@ -77,6 +77,16 @@ func TestArrayList(t *testing.T) {
 	})
 	assert.Equal(t, qList.All(func(item int) bool { return item%2 == 0 }), true)
 
+	justQuery := Just(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+	assert.Equal(t, justQuery.Take(2).ToSlice(), []int{1, 2})
+
+	assert.Equal(t, Just(1, 2, 3, 4, 5).Skip(2).ToSlice(), []int{3, 4, 5})
+
+	assert.Equal(t, Range(0, 3).ToSlice(), []int{0, 1, 2, 3})
+
+	queryDistinct := Just(1, 2, 2, 3, 4, 4, 5).Distinct()
+	queryDistinct.Sort(func(a, b int) bool { return a < b })
+	assert.Equal(t, queryDistinct.ToSlice(), []int{1, 2, 3, 4, 5})
 }
 
 func TestListEnumerable(t *testing.T) {

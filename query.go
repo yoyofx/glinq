@@ -5,8 +5,28 @@ import "sort"
 // Queryable query collection
 type Queryable[T any] []T
 
+func Just[T any](items ...T) Queryable[T] {
+	return items
+}
+
 func From[T any](items []T) Queryable[T] {
 	return items
+}
+
+func Range[T Number](n T, m T) Queryable[T] {
+	count := n + m + 1
+	slice := make([]T, int(count))
+	index := 0
+	for {
+		currentV := n + T(index)
+		if currentV <= m {
+			slice[index] = currentV
+			index++
+		} else {
+			break
+		}
+	}
+	return slice
 }
 
 // ToSlice Queryable to slice
@@ -77,7 +97,7 @@ func (query Queryable[T]) CountIf(predicate func(T) bool) int {
 func (query Queryable[T]) First() (T, error) {
 	var item T
 	slice := query.ToSlice()
-	if len([]T(slice)) > 0 {
+	if len(slice) > 0 {
 		item = slice[0]
 	}
 	return item, ErrorCannotFound
@@ -91,4 +111,57 @@ func (query Queryable[T]) FirstIf(predicate func(T) bool) (T, error) {
 // Sort return the sort element of a collection by compare function.
 func (query Queryable[T]) Sort(cmp func(T, T) bool) {
 	sort.Sort(orderedSlice[T]{query, cmp})
+}
+
+// Take [:n], n times for elements in collection.
+func (query Queryable[T]) Take(n int) Queryable[T] {
+	if n == 0 {
+		panic("n is cannot be zero")
+	}
+	index := 0
+	newSlice := make([]T, n)
+	DoWhile(query.GetEnumerator(), func(elem T) bool {
+		if n <= index {
+			return false
+		}
+		newSlice[index] = elem
+		index++
+		return true
+	})
+	return newSlice
+}
+
+// Skip [n:], n times and take elements for collection
+func (query Queryable[T]) Skip(n int) Queryable[T] {
+	if n == 0 {
+		panic("n is cannot be zero")
+	}
+	index := 0
+	count := query.Count()
+	newSlice := make([]T, count-n)
+	DoWhile(query.GetEnumerator(), func(elem T) bool {
+		if index >= n {
+			newSlice[index-n] = elem
+		}
+		index++
+		return true
+	})
+	return newSlice
+}
+
+func (query Queryable[T]) Distinct() Queryable[T] {
+	kvMap := make(map[interface{}]bool)
+	query.ForEach(func(index int, elem T) {
+		_, ok := kvMap[elem]
+		if !ok {
+			kvMap[elem] = true
+		}
+	})
+	j := 0
+	keys := make([]T, len(kvMap))
+	for k := range kvMap {
+		keys[j] = k.(T)
+		j++
+	}
+	return keys
 }
