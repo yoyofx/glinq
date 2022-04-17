@@ -149,6 +149,7 @@ func (query Queryable[T]) Skip(n int) Queryable[T] {
 	return newSlice
 }
 
+// Distinct return collection for duplicate removal.
 func (query Queryable[T]) Distinct() Queryable[T] {
 	kvMap := make(map[interface{}]bool)
 	query.ForEach(func(index int, elem T) {
