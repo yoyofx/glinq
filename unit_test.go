@@ -3,6 +3,7 @@ package glinq
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	g "github.com/yoyofx/glinq/generic"
 	"strconv"
 	"testing"
 )
@@ -181,4 +182,17 @@ func TestEmployeeList(t *testing.T) {
 		return result + item
 	})
 	assert.Equal(t, youngerTotalPaySalary, 23000.0)
+}
+
+func TestBTree(t *testing.T) {
+	tree := NewBTree[int, string](g.Less[int])
+
+	tree.Put(42, "foo")
+	tree.Put(-10, "bar")
+	tree.Put(0, "baz")
+
+	tree.Each(func(key int, val string) {
+		fmt.Println(key, val)
+	})
+
 }

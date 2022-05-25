@@ -1,7 +1,14 @@
 # glinq
-LINQ for Golang
+A collection of generic data structures and LINQ written in Go.
 
-examples:
+## data structures include:
+* List
+* Linked List
+* Array
+* Stack
+* B Tree
+
+## examples:
 ```go
 var employees = NewListOf([]Employee{
 	{"Hao", 44, 0, 8000.5},
