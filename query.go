@@ -96,11 +96,13 @@ func (query Queryable[T]) CountIf(predicate func(T) bool) int {
 // First return the first element of a collection.
 func (query Queryable[T]) First() (T, error) {
 	var item T
+	err := ErrorCannotFound
 	slice := query.ToSlice()
 	if len(slice) > 0 {
 		item = slice[0]
+		err = nil
 	}
-	return item, ErrorCannotFound
+	return item, err
 }
 
 // FirstIf return first element of collection satisfy a condition.
